@@ -17,11 +17,20 @@ router.get('/allTransmissions',(req, res) => {
     })
 
 router.post('/addtransmission', (req, res) => {
-    (date, nurse, info, patient, document) = req.body
-
+    (date, nurse, info, _id, document) = req.body
+    const newTransmission =
     {
-        date: Date,
-        nurse : String,
-        info : String
+        date,
+        nurse,
+        info,
     }
+    Patient.updateOne({_id}, {transmissions : [...transmissions,...newTransmission]}).then(() => {
+        if(document){
+            Patient.updateOne({_id},{documents:[...documents,document]}).then(() => console.log('ok'))
+        }
+        res.json({result:true})
+    })
 })
+
+
+module.exports = router;
