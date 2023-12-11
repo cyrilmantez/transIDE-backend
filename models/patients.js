@@ -11,7 +11,7 @@ const patientSchema = mongoose.Schema({
         town: String,
         infos : String
         },
-    phone: [{
+    phoneNumbers: [{
         home: String,
         mobile: String
     }],    
