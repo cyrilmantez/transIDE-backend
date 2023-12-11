@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const patientSchema = mongoose.Schema({
     officeToken: String,
     name: String,
-    firstName: String,
+    firstname: String,
     yearOfBirthday : Date,
     address: {
         road: String,
         postalCode: Number,
-        town: String,
+        city: String,
         infos : String
         },
     phoneNumbers: [{

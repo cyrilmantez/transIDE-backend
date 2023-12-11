@@ -11,7 +11,7 @@ const { checkBody } = require('../modules/checkBody');
 
 router.post('/addPatient', (req,res) => {
 
-    if (!checkBody(req.body, ['name', 'firstname', 'road', 'town'])) {
+    if (!checkBody(req.body, ['name', 'firstname', 'road', 'city'])) {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
     };
@@ -23,7 +23,7 @@ router.post('/addPatient', (req,res) => {
         yearOfBirthday : req.body.dateOfBirthday,
         address: {
             road: req.body.road,
-            town: req.body.town,
+            city: req.body.city,
             postalCode: req.body.postalCode,
             infos: req.body.infos
         },
@@ -53,11 +53,14 @@ router.post('/addPatient', (req,res) => {
 /////////// modification d'un patient :
 
 router.put('/updatePatientById', (req, res)=> {
-    (_id, key, value) = req.body;
-    Patient.updateOne({_id}, {key: value}).then(data => {
+    const newObject = req.body.newObject
+    Patient.updateOne({_id: req.body._id}, newObject).then(data => {
         res.json ({result : true, modification : data})
     })
 })
+
+
+
 
 
 ////////////// ajouter des soins à un patient :
@@ -75,7 +78,7 @@ router.put('addTreatment', (req, res) => {
 //////////// suppression d'un patient :
 
 router.delete('/deletePatient/:_id', (req, res)=> {
-    Patient.deletOne({_id: req.params._id}).then(data => {
+    Patient.deleteOne({_id: req.params._id}).then(data => {
         res.json({result : true})
     })
 })

@@ -15,3 +15,5 @@ router.get('/allTransmissions',(req, res) => {
         }
         })
     })
+
+    module.exports = router;
