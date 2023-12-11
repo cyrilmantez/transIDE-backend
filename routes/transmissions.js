@@ -15,3 +15,13 @@ router.get('/allTransmissions',(req, res) => {
         }
         })
     })
+
+router.post('/addtransmission', (req, res) => {
+    (date, nurse, info, patient, document) = req.body
+
+    {
+        date: Date,
+        nurse : String,
+        info : String
+    }
+})
