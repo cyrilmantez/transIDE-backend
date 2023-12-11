@@ -5,12 +5,12 @@ const app = require('../app');
 //////////// création patient :
 
 it('POST/patients/addPatient', async () => {
-    const res = await request(app).post('/patients/addPatient').send({
+    const res = await request(app).post('/patients/addPatient').setEncoding({
         name: 'miro',
         firstname: 'marcel',
         address: {
             road: '28 allée du vide',
-            town : 'Lille'
+            city : 'Lille'
         }
      });;
    
