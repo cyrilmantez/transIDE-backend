@@ -19,3 +19,20 @@ it('POST/patients/addPatient', async () => {
    });
 
 
+///////////// route get/allPatients :
+
+it('GET/allPatients/:dateOfToday', async () => {
+
+    const dateOfToday = '27/12/2023';
+
+    const res = await request(app).get(`/allPatients/${dateOfToday}`);
+   
+    expect(res.statusCode).toBe(200);
+    expect(res.body.result).toEqual(true);
+   });
+
+
+/////////////////   
+
+
+

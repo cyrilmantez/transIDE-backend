@@ -24,7 +24,7 @@ router.post('/addtransmission', (req, res) => {
         nurse,
         info,
     }
-    Patient.updateOne({_id}, {transmissions : [...transmissions,...newTransmission]}).then(() => {
+    Patient.updateOne({_id}, {transmissions : [...transmissions, newTransmission]}).then(() => {
         if(document){
             Patient.updateOne({_id},{documents:[...documents,document]}).then(() => console.log('ok'))
         }
