@@ -35,10 +35,10 @@ const patientSchema = mongoose.Schema({
         info : String
     }],
     disponibility: Boolean,
-    inCaseOfEmergency : [{
+    inCaseOfEmergency : {
         identity: String,
         phoneNumber: String,
-    }]
+    }
 
 })
 
