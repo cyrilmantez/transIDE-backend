@@ -17,38 +17,71 @@ router.post('/addPatient', (req,res) => {
     };
 
     const newPatient = new Patient ({
-        officeToken: req.body.officeToken,
+        //officeToken: req.body.officeToken,
+        officeToken: 'vdDiOxapy8T3uUGLmyEy-jG6shv6qyQJ',
         name: req.body.name,
         firstname: req.body.firstname,
         yearOfBirthday : req.body.dateOfBirthday,
         address: req.body.address,
-        infosAddress : req.body.infosAddress,
-        homePhone : req.body.homePhone,
-        mobile: req.body.mobile, 
+        //infosAddress : req.body.infosAddress,
+        infosAddress : 'req.body.infosAddress',
+        //homePhone : req.body.homePhone,
+        homePhone : 'req.body.homePhone',
+        //mobile: req.body.mobile
+        mobile: 'req.body.mobile',
         treatments:[{
             state: false,
-            date: req.body.treatmentDate,
-            actions: [req.body.actions],
-            nurse: req.body.username,
-            documentsOfTreatment: [{
+            //date: req.body.treatmentDate,
+            date: new Date('2023-11-13T16:00'),
+            //actions: [req.body.actions],
+            actions: ['req.body.actions','req.body.actions'],
+            //nurse: req.body.username,
+            nurse: 'req.body.username',
+            /*documentsOfTreatment: [{
                 creationDate: req.body.creationDateOfDocumentsOfTreatment,
                 urls: [req.body.urlsOfDocumentsOfTreatment]
+            }],*/
+            documentsOfTreatment: [{
+                creationDate: new Date('2023-12-12'),
+                urls: ['req.body.urlsOfDocumentsOfTreatment','req.body.urlsOfDocumentsOfTreatment']
             }],
         }],
-        documents: [{
+        /*documents: [{
             creationDate: req.body.creationDateOfDocument,
             url: req.body.urlOfDocument
-        }],    
-        transmissions: [{
+        }],*/
+        documents: [{
+            creationDate: new Date('2023-12-10'),
+            url: 'req.body.urlOfDocument',
+        }],       
+        /*transmissions: [{
                 date: req.body.transmissionDate,
                 nurse : req.body.username,
                 info : req.body.info,
                 urlDocument: req.body.urlDocument,    
+        }],*/
+        transmissions: [{
+            date: new Date('2023-12-11T13:39'),
+            nurse : 'req.body.username',
+            info : 'req.body.info',
+            urlDocument: 'req.body.urlDocument',    
+        }, {
+        date: new Date('2023-12-12T17:39'),
+        nurse : 'req.body.username',
+        info : 'req.body.info',
+        urlDocument: 'req.body.urlDocument',    
+        },{
+        date: new Date('2023-12-14T09:39'),
+        nurse : 'req.body.username',
+        info : 'req.body.info',
+        urlDocument: 'req.body.urlDocument',    
         }],
         disponibility: true,
-        ICEIdentity: req.body.ICEIdentity,
-        ICEPhoneNumber: req.body.ICEPhoneNumber,   
-    });
+        //ICEIdentity: req.body.ICEIdentity,
+        ICEIdentity: 'req.body.ICEIdentity',
+        //ICEPhoneNumber: req.body.ICEPhoneNumber,
+        ICEPhoneNumber: 'req.body.ICEPhoneNumber',
+        });
 
     newPatient.save().then(data => {
         res.json ({result : true, patientCreate : data})

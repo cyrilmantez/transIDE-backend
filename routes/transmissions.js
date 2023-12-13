@@ -5,11 +5,15 @@ require('../models/connection');
 const Patient = require('../models/patients');
 const { checkBody } = require('../modules/checkBody');
 
-router.get('/allTransmissions',(req, res) => {
-    const requestDate = new Date(req.body.date)
+router.get('/allTransmissions/:date',(req, res) => {
+    const requestDate = new Date(req.params.date)
     Patient.find({'transmissions.date':{$gt:requestDate}}).then(data => {
-        if (data.length>0) {
-              const transmissionsArray = data.map(patient => patient === patient.transmissions)
+        console.log(data);
+       if (data.length>0) {
+              const transmissionsArray = data.map(patient => patient = {
+                name : patient.name,
+                firstname: patient.firstname,
+                transmissions: patient.transmissions.filter(e => e.date > requestDate)})
               res.json({result:true,transmissions : transmissionsArray})
         }else{
             res.json({result:false, error : 'no transmission after the specified date'})
@@ -20,7 +24,7 @@ router.get('/allTransmissions',(req, res) => {
             res.status(500).json({ result: false, error: 'Internal server error' });
           });
     })
-
+//"date": "2023-12-12T12:39:00.000Z"
 router.post('/addtransmission', (req, res) => {
     const {date, nurse, info, _id, document} = req.body
     const newTransmission =
