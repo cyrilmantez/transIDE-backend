@@ -97,12 +97,15 @@ router.delete('/deletePatient/:_id', (req, res)=> {
 
 router.post('/allPatients', (req, res) => {
     Patient.find({officeToken: req.body.officeToken}).then(data => {
-         const allPatientsToSee =  data.filter(patient => patient.treatments.date < req.body.dateOfToday.setHours(25,0,0,0) && patient.treatments.date > req.body.dateOfToday.setHours(1,0,0,0));
+        const newDate = new Date(req.body.dateOfToday);
+        const newDateBefore = newDate.setHours(1,0,0,0);
+        const newDateLater = newDate.setHours(25,0,0,0);
+        const allPatientsToSee =  data.filter(patient => patient.treatments[0].date < newDateLater && patient.treatments[0].date >= newDateBefore);
          res.json({result: true, patientsToSee: allPatientsToSee})
     })
 
 })
-
+// && patient.treatments[0].date > newDateBefore
 
 
 ///////////// récupération d'un patient :
