@@ -11,7 +11,7 @@ const { checkBody } = require('../modules/checkBody');
 
 router.post('/addPatient', (req,res) => {
 
-    if (!checkBody(req.body, ['name', 'firstname', 'road', 'city'])) {
+    if (!checkBody(req.body, ['name', 'firstname', 'address'])) {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
     };
@@ -21,16 +21,12 @@ router.post('/addPatient', (req,res) => {
         name: req.body.name,
         firstname: req.body.firstname,
         yearOfBirthday : req.body.dateOfBirthday,
-        address: {
-            road: req.body.road,
-            city: req.body.city,
-            postalCode: req.body.postalCode,
-            infos: req.body.infos
-        },
+        address: req.body.address,
+        infosAddress : req.body.infosAddress,
         treatment:{
             state: false,
             date: req.body.date,
-            actions: [req.body.action],
+            actions: [req.body.actions],
             nurse: req.body.username
         },
         phoneNumbers: {
