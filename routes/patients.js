@@ -95,9 +95,9 @@ router.delete('/deletePatient/:_id', (req, res)=> {
 
 ///////////// recupération de tous les patients à voir pour le jour :
 
-router.get('/allPatients', (req, res) => {
+router.post('/allPatients', (req, res) => {
     Patient.find({officeToken: req.body.officeToken}).then(data => {
-         const allPatientsToSee =  data.filter(patient => patient.treatments.date === req.body.dateOfToday);
+         const allPatientsToSee =  data.filter(patient => patient.treatments.date < req.body.dateOfToday.setHours(25,0,0,0) && patient.treatments.date > req.body.dateOfToday.setHours(1,0,0,0));
          res.json({result: true, patientsToSee: allPatientsToSee})
     })
 
