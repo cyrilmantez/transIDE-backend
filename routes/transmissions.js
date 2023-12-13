@@ -7,19 +7,23 @@ const { checkBody } = require('../modules/checkBody');
 
 router.get('/allTransmissions/:date',(req, res) => {
     const requestDate = new Date(req.params.date)
+    requestDate.setHours(1, 0, 0, 0);
+    console.log(requestDate)
     Patient.find({'transmissions.date':{$gt:requestDate}}).then(data => {
         console.log(data);
        if (data.length>0) {
             const transmissionsArray =[];
             for (const patient of data) {
                 for (const transmission of patient.transmissions) {
-                    transmissionsArray.push({
+                    if(transmission.date>=requestDate){
+                        transmissionsArray.push({
                         name: patient.name,
                         firstname : patient.firstname,
                         date : transmission.date,
                         nurse : transmission.nurse,
                         info: transmission.info,
                     })
+                    }
                 }
             }
             res.json({result:true,transmissions : transmissionsArray})
