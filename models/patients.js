@@ -11,10 +11,10 @@ const patientSchema = mongoose.Schema({
         city: String,
         infos : String
         },
-    phoneNumbers: [{
+    phoneNumbers: {
         home: String,
         mobile: String
-    }],    
+    },    
     treatment: [{
         state : Boolean,
         date : Date,          /*avec heure*/
