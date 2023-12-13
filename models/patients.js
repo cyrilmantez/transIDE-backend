@@ -32,7 +32,8 @@ const patientSchema = mongoose.Schema({
     transmissions: [{
         date: Date,
         nurse : String,
-        info : String
+        info : String,
+        document: String,
     }],
     disponibility: Boolean,
     inCaseOfEmergency : {

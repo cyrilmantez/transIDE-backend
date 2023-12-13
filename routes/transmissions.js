@@ -6,14 +6,19 @@ const Patient = require('../models/patients');
 const { checkBody } = require('../modules/checkBody');
 
 router.get('/allTransmissions',(req, res) => {
-    Patient.find({transmissions : {date : req.body.date}}).then(data => {
+    const requestDate = new Date(req.body.date)
+    Patient.find({'transmissions.date':{$gt:requestDate}}).then(data => {
         if (data.length>0) {
-              const transmissionsArray = data.map(e => e === e.transmissions)
+              const transmissionsArray = data.map(patient => patient === patient.transmissions)
               res.json({result:true,transmissions : transmissionsArray})
         }else{
-            res.json({result:false, error : 'no transmission for this date'})
+            res.json({result:false, error : 'no transmission after the specified date'})
         }
-        })
+        }).catch(error => {
+            // Gérer les erreurs liées à la recherche dans la base de données
+            console.error(error);
+            res.status(500).json({ result: false, error: 'Internal server error' });
+          });
     })
 
 router.post('/addtransmission', (req, res) => {
@@ -23,13 +28,18 @@ router.post('/addtransmission', (req, res) => {
         date,
         nurse,
         info,
+        document,
     }
-    Patient.updateOne({_id}, {transmissions : [...transmissions, newTransmission]}).then(() => {
+    Patient.updateOne({_id}, {transmissions : [...transmissions,newTransmission]}).then(() => {
         if(document){
             Patient.updateOne({_id},{documents:[...documents,document]}).then(() => console.log('ok'))
         }
         res.json({result:true})
-    })
+    }).catch(error => {
+        // Gérer les erreurs liées à la recherche dans la base de données
+        console.error(error);
+        res.status(500).json({ result: false, error: 'Internal server error' });
+      });
 })
 
 
