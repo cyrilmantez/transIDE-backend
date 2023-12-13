@@ -11,7 +11,7 @@ const { checkBody } = require('../modules/checkBody');
 
 router.post('/addPatient', (req,res) => {
 
-    if (!checkBody(req.body, ['name', 'firstname', 'road', 'city'])) {
+    if (!checkBody(req.body, ['name'])) {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
     };
