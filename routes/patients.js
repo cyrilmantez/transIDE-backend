@@ -11,7 +11,7 @@ const { checkBody } = require('../modules/checkBody');
 
 router.post('/addPatient', (req,res) => {
 
-    if (!checkBody(req.body, ['name', 'firstname', 'road', 'city'])) {
+    if (!checkBody(req.body, ['name', 'firstname', 'address'])) {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
     };
@@ -21,28 +21,35 @@ router.post('/addPatient', (req,res) => {
         name: req.body.name,
         firstname: req.body.firstname,
         yearOfBirthday : req.body.dateOfBirthday,
-        address: {
-            road: req.body.road,
-            city: req.body.city,
-            postalCode: req.body.postalCode,
-            infos: req.body.infos
-        },
-        treatment:{
+        address: req.body.address,
+        infosAddress : req.body.infosAddress,
+        homePhone : req.body.homePhone,
+        mobile: req.body.mobile, 
+        treatments:[{
             state: false,
-            date: req.body.date,
-            actions: [req.body.action],
-            nurse: req.body.username
-        },
-        phoneNumbers: {
-            home: req.body.homePhone,
-            mobile : req.body.mobilePhone,
-        },
-        inCaseOfEmergency: {
-            identity: req.body.identity,
-            phoneNumber: req.body.phoneNumber,
-        }
-        
+            date: req.body.treatmentDate,
+            actions: [req.body.actions],
+            nurse: req.body.username,
+            documentsOfTreatment: [{
+                creationDate: req.body.creationDateOfDocumentsOfTreatment,
+                urls: [req.body.urlsOfDocumentsOfTreatment]
+            }],
+        }],
+        documents: [{
+            creationDate: req.body.creationDateOfDocument,
+            url: req.body.urlOfDocument
+        }],    
+        transmissions: [{
+                date: req.body.transmissionDate,
+                nurse : req.body.username,
+                info : req.body.info,
+                urlDocument: req.body.urlDocument,    
+        }],
+        disponibility: true,
+        ICEIdentity: req.body.ICEIdentity,
+        ICEPhoneNumber: req.body.ICEPhoneNumber,   
     });
+
     newPatient.save().then(data => {
         res.json ({result : true, patientCreate : data})
     })
@@ -65,8 +72,8 @@ router.put('/updatePatientById', (req, res)=> {
 
 ////////////// ajouter des soins à un patient :
 
-router.put('addTreatment', (req, res) => {
-    Patient.updateOne({_id: req.body._id}, {treatment : [...treatment, ...req.body]}).then(data => {
+router.put('/addTreatment', (req, res) => {
+    Patient.updateOne({_id: req.body._id}, {treatments : [...treatments, req.body]}).then(data => {
         res.json({result: true})
     })
 })
@@ -88,9 +95,9 @@ router.delete('/deletePatient/:_id', (req, res)=> {
 
 ///////////// recupération de tous les patients à voir pour le jour :
 
-router.get('/allPatients/:dateOfToday', (req, res) => {
-    Patient.find().then(data => {
-         const allPatientsToSee =  data.filter(patient => patient.treatment.date === req.params.dateOfToday);
+router.get('/allPatients', (req, res) => {
+    Patient.find({officeToken: req.body.officeToken}).then(data => {
+         const allPatientsToSee =  data.filter(patient => patient.treatments.date === req.body.dateOfToday);
          res.json({result: true, patientsToSee: allPatientsToSee})
     })
 

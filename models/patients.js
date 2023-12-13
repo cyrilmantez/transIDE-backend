@@ -1,5 +1,42 @@
 const mongoose = require('mongoose');
 
+
+
+///////// sous sous document: documents liés à une consultation 
+const documentsOfTreatmentSchema = mongoose.Schema({
+    creationDate: Date,
+    urls: [String]
+});  
+
+
+//////////: sous document: consultation :
+const treatmentsSchema = mongoose.Schema({
+    state : Boolean,
+    date : Date,          /*avec heure*/
+    actions: [String],
+    nurse: String,
+    documentsOfTreatment: [documentsOfTreatmentSchema],
+   });
+
+
+//////////// sous document: transmissions :
+ const transmissionsSchema = mongoose.Schema({
+    date: Date,
+    nurse : String,
+    info : String,
+    UrlDocument: String,
+ });  
+
+ 
+ ////////////sous document : documents patients :
+ const documentsSchema = mongoose.Schema({
+    creationDate: Date,
+    url: String
+ });  
+
+
+
+
 const patientSchema = mongoose.Schema({
     officeToken: String,
     name: String,
@@ -7,35 +44,15 @@ const patientSchema = mongoose.Schema({
     yearOfBirthday : String,
     address: String,
     infosAddress : String,
-    phoneNumbers: [{
-        home: String,
-        mobile: String
-    }],    
-    treatment: [{
-        state : Boolean,
-        date : Date,          /*avec heure*/
-        actions: [String],
-        nurse: String,
-        documentsOfTreatment: [{
-            creationDate: Date,
-            urls: [String]
-        }],
-    }],
-    documents : [{
-        creationDate: Date,
-        urls: [String]
-    }],
-    transmissions: [{
-        date: Date,
-        nurse : String,
-        info : String,
-        document: String,
-    }],
+    homePhone : String,
+    mobile: String, 
+    treatments: [treatmentsSchema],
+    documents : [documentsSchema],
+    transmissions: [transmissionsSchema ],
     disponibility: Boolean,
-    inCaseOfEmergency : [{
-        identity: String,
-        phoneNumber: String,
-    }]
+    ICEIdentity: String,
+    ICEPhoneNumber: String,
+  
 
 })
 
