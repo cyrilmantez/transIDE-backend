@@ -4,17 +4,13 @@ const patientSchema = mongoose.Schema({
     officeToken: String,
     name: String,
     firstname: String,
-    yearOfBirthday : Date,
-    address: {
-        road: String,
-        postalCode: Number,
-        city: String,
-        infos : String
-        },
-    phoneNumbers: {
+    yearOfBirthday : String,
+    address: String,
+    infosAddress : String,
+    phoneNumbers: [{
         home: String,
         mobile: String
-    },    
+    }],    
     treatment: [{
         state : Boolean,
         date : Date,          /*avec heure*/
@@ -36,10 +32,10 @@ const patientSchema = mongoose.Schema({
         document: String,
     }],
     disponibility: Boolean,
-    inCaseOfEmergency : {
+    inCaseOfEmergency : [{
         identity: String,
         phoneNumber: String,
-    }
+    }]
 
 })
 
