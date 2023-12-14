@@ -21,39 +21,34 @@ router.post('/addPatient', (req,res) => {
         //officeToken: 'vdDiOxapy8T3uUGLmyEy-jG6shv6qyQJ',
         name: req.body.name,
         firstname: req.body.firstname,
-        yearOfBirthday : req.body.dateOfBirthday,
+        yearOfBirthday : req.body.yearOfBirthday,
         address: req.body.address,
-        //infosAddress : req.body.infosAddress,
-        infosAddress : 'req.body.infosAddress',
-        //homePhone : req.body.homePhone,
-        homePhone : 'req.body.homePhone',
-        //mobile: req.body.mobile
-        mobile: 'req.body.mobile',
+        infosAddress : req.body.infosAddress,
+        homePhone : req.body.homePhone,
+        mobile: req.body.mobile,
         treatments:[{
             state: false,
-            date: req.body.treatments[0].treatmentDate,
+            date: req.body.treatments[0].date,
             actions: req.body.treatments[0].actions,
-            nurse: req.body.username,
+            nurse: req.body.treatments[0].nurse,
             documentsOfTreatment: [{
-                creationDate: req.body.creationDateOfDocumentsOfTreatment,
-                urls: [req.body.urlsOfDocumentsOfTreatment]
+                creationDate: req.body.treatments[0].documentsOfTreatment[0].creationDate,
+                urls: [req.body.treatments[0].documentsOfTreatment[0].url]
             }],
         }],
         documents: [{
-            creationDate: req.body.creationDateOfDocument,
-            url: req.body.urlOfDocument
+            creationDate: req.body.documents[0].creationDateOfDocument,
+            url: req.body.documents[0].urlOfDocument
         }],    
         transmissions: [{
-                date: req.body.transmissionDate,
-                nurse : req.body.username,
-                info : req.body.info,
-                urlDocument: req.body.urlDocument,    
+                date: req.body.transmissions[0].transmissionDate,
+                nurse : req.body.transmissions[0].username,
+                info : req.body.transmissions[0].info,
+                urlDocument: req.body.transmissions[0].urlDocument,    
         }],
         disponibility: true,
-        //ICEIdentity: req.body.ICEIdentity,
-        ICEIdentity: 'req.body.ICEIdentity',
-        //ICEPhoneNumber: req.body.ICEPhoneNumber,
-        ICEPhoneNumber: 'req.body.ICEPhoneNumber',
+        ICEIdentity: req.body.ICEIdentity,
+        ICEPhoneNumber: req.body.ICEPhoneNumber,
         });
 
     newPatient.save().then(data => {
@@ -102,8 +97,6 @@ router.delete('/deletePatient/:_id', (req, res)=> {
 ///////////// recupération de tous les patients à voir pour le jour :
 
 router.post('/allPatients', (req, res) => {
-    
-    ///////// traitement de la date envoyée :  
     const newDate = new Date(req.body.dateOfToday);
     const targetDate = newDate.getDate();
     const targetMonth = newDate.getMonth() + 1;
@@ -115,40 +108,40 @@ router.post('/allPatients', (req, res) => {
             let allTreatments = patient.treatments
             for (let i=0; i<allTreatments.length; i++) {
 
-    ///////// traitement de la date trouvée :  
+                // Vérifiez si la date existe avant d'essayer d'accéder à ses propriétés
+                if (allTreatments[i].date) {
+                    const jour = allTreatments[i].date.getDate();
+                    const mois = allTreatments[i].date.getMonth()+1;
+                    const annee = allTreatments[i].date.getFullYear();
 
-                const jour = allTreatments[i].date.getDate();
-                const mois = allTreatments[i].date.getMonth()+1;
-                const annee = allTreatments[i].date.getFullYear();
+                    if (annee === targetYear && jour === targetDate && mois === targetMonth){
+                        const minutes = allTreatments[i].date.getMinutes();
+                        const hours = allTreatments[i].date.getHours()-1;
 
-    //////// comparaison des dates :
-                if (annee === targetYear && jour === targetDate && mois === targetMonth){
-                    const minutes = allTreatments[i].date.getMinutes();
-                    const hours = allTreatments[i].date.getHours()-1;
-    
-                    const formattedMinutes = String(minutes).padStart(2, '0');
-                    const formattedHours = String(hours).padStart(2, '0');
+                        const formattedMinutes = String(minutes).padStart(2, '0');
+                        const formattedHours = String(hours).padStart(2, '0');
 
-    /////////// création de l'objet retourné par date correspondante :
-                    const infosToHave = {
-                        _id: patient._id,
-                        name : patient.name,
-                        firstname : patient.firstname,
-                        hour: `${formattedHours}:${formattedMinutes}`,
-                        actions: allTreatments[i].actions,
-                        address : patient.address,
-                        infosAddress: patient.infosAddress,
-                        mobile: patient.mobile,
-                        homePhone: patient.homePhone,
-                        treatmentState: allTreatments[i].state,
-                    } 
-                    allPatientsToSee.push(infosToHave)
+                        const infosToHave = {
+                            _id: patient._id,
+                            name : patient.name,
+                            firstname : patient.firstname,
+                            hour: `${formattedHours}:${formattedMinutes}`,
+                            actions: allTreatments[i].actions,
+                            address : patient.address,
+                            infosAddress: patient.infosAddress,
+                            mobile: patient.mobile,
+                            homePhone: patient.homePhone,
+                            treatmentState: allTreatments[i].state,
+                        } 
+                        allPatientsToSee.push(infosToHave)
+                    }
+                } else {
+                    console.log(`Le traitement ${i} pour le patient ${patient.name} n'a pas de date.`);
                 }
             }
         }
        res.json({result: true, patientsToSee: allPatientsToSee})
     });
-
 });
 
 
