@@ -129,10 +129,9 @@ router.delete('/deletePatient/:_id', (req, res)=> {
 ///////////// recupération de tous les patients à voir pour le jour :
 
 router.post('/allPatients', (req, res) => {
+    
+    ///////// traitement de la date envoyée :  
     const newDate = new Date(req.body.dateOfToday);
-    // const newDateBefore = newDate.setHours(1,0,0,0);
-    // const newDateLater = newDate.setHours(25,0,0,0);
-
     const targetDate = newDate.getDate();
     const targetMonth = newDate.getMonth() + 1;
     const targetYear = newDate.getFullYear();
@@ -141,28 +140,39 @@ router.post('/allPatients', (req, res) => {
         let allPatientsToSee = [];
         for (const patient of data){
             let allTreatments = patient.treatments
-            console.log('rdv du patient', patient.name , allTreatments)
             for (let i=0; i<allTreatments.length; i++) {
+
+    ///////// traitement de la date trouvée :  
+
                 const jour = allTreatments[i].date.getDate();
                 const mois = allTreatments[i].date.getMonth()+1;
                 const annee = allTreatments[i].date.getFullYear();
+
+    //////// comparaison des dates :
                 if (annee === targetYear && jour === targetDate && mois === targetMonth){
+                    const minutes = allTreatments[i].date.getMinutes();
+                    const hours = allTreatments[i].date.getHours()-1;
+    
+                    const formattedMinutes = String(minutes).padStart(2, '0');
+                    const formattedHours = String(hours).padStart(2, '0');
+
+    /////////// création de l'objet retourné par date correspondante :
                     const infosToHave = {
                         _id: patient._id,
                         name : patient.name,
                         firstname : patient.firstname,
-                        hour: `${allTreatments[i].date.getHours()-1}:${allTreatments[i].date.getMinutes()}`,
+                        hour: `${formattedHours}:${formattedMinutes}`,
                         actions: allTreatments[i].actions,
                         address : patient.address,
                         infosAddress: patient.infosAddress,
-                        treatmentState: allTreatments[i].state
+                        treatmentState: allTreatments[i].state,
                     } 
                     allPatientsToSee.push(infosToHave)
                 }
             }
         }
        res.json({result: true, patientsToSee: allPatientsToSee})
-    })
+    });
 
 });
 
