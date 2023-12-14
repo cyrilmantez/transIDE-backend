@@ -53,6 +53,8 @@ router.post('/signin', (req, res) => {
   });
 });
 
+
+
 //ROUTE DE TEST POUR SUPPRIMER UN USER
 router.delete('/delete', (req, res) => {
   User.deleteOne({ username: req.body.username }).then(() => {

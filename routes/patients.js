@@ -17,38 +17,44 @@ router.post('/addPatient', (req,res) => {
     };
     console.log(req.body)
     const newPatient = new Patient ({
-        officeToken: req.body.officeToken,
+        //officeToken: req.body.officeToken,
+        officeToken: 'vdDiOxapy8T3uUGLmyEy-jG6shv6qyQJ',
         name: req.body.name,
         firstname: req.body.firstname,
         yearOfBirthday : req.body.dateOfBirthday,
         address: req.body.address,
-        infosAddress : req.body.infosAddress,
-        homePhone : req.body.homePhone,
-        mobile: req.body.mobile, 
+        //infosAddress : req.body.infosAddress,
+        infosAddress : 'req.body.infosAddress',
+        //homePhone : req.body.homePhone,
+        homePhone : 'req.body.homePhone',
+        //mobile: req.body.mobile
+        mobile: 'req.body.mobile',
         treatments:[{
             state: false,
-            date: req.body.treatments[0].treatmentDate,
-            actions: req.body.treatments[0].actions,
-            nurse: req.body.treatments[0].username,
+            date: req.body.treatmentDate,
+            actions: [req.body.actions],
+            nurse: req.body.username,
             documentsOfTreatment: [{
-                creationDate: req.body.treatments[0].documentsOfTreatment[0].creationDateOfDocumentsOfTreatment,
-                urls: [req.body.treatments[0].documentsOfTreatment[0].urlsOfDocumentsOfTreatment]
+                creationDate: req.body.creationDateOfDocumentsOfTreatment,
+                urls: [req.body.urlsOfDocumentsOfTreatment]
             }],
         }],
         documents: [{
-            creationDate: req.body.documents[0].creationDateOfDocument,
-            url: req.body.documents[0].urlOfDocument
+            creationDate: req.body.creationDateOfDocument,
+            url: req.body.urlOfDocument
         }],    
         transmissions: [{
-                date: req.body.transmissions[0].transmissionDate,
-                nurse : req.body.transmissions[0].username,
-                info : req.body.transmissions[0].info,
-                urlDocument: req.body.transmissions[0].urlDocument,    
+                date: req.body.transmissionDate,
+                nurse : req.body.username,
+                info : req.body.info,
+                urlDocument: req.body.urlDocument,    
         }],
         disponibility: true,
-        ICEIdentity: req.body.ICEIdentity,
-        ICEPhoneNumber: req.body.ICEPhoneNumber,   
-    });
+        //ICEIdentity: req.body.ICEIdentity,
+        ICEIdentity: 'req.body.ICEIdentity',
+        //ICEPhoneNumber: req.body.ICEPhoneNumber,
+        ICEPhoneNumber: 'req.body.ICEPhoneNumber',
+        });
 
     newPatient.save().then(data => {
         res.json ({result : true, patientCreate : data})
@@ -95,14 +101,29 @@ router.delete('/deletePatient/:_id', (req, res)=> {
 
 ///////////// recupération de tous les patients à voir pour le jour :
 
-router.get('/allPatients', (req, res) => {
+router.post('/allPatients', (req, res) => {
     Patient.find({officeToken: req.body.officeToken}).then(data => {
-         const allPatientsToSee =  data.filter(patient => patient.treatments.date === req.body.dateOfToday);
-         res.json({result: true, patientsToSee: allPatientsToSee})
+        const newDate = new Date(req.body.dateOfToday);
+        const newDateBefore = newDate.setHours(1,0,0,0);
+        const newDateLater = newDate.setHours(25,0,0,0);
+        let allPatientsToSee;
+        
+        for (const patient in data){
+            allTreatments = patient.treatments
+            for (let i=0; i<allTreatments.length; i++) {
+                if (allTreatments[i].date <= newDateLater && allTreatments[i].date >= newDateBefore) {
+                    allPatientsToSee.push(patient)
+                }
+            }
+        }
+        res.json({result: true, patientsToSee: allPatientsToSee})
+
+    //     const allPatientsToSee =  data.filter(patient => 
+    //         patient.treatments[0].date < newDateLater && patient.treatments[0].date >= newDateBefore);
+    //      res.json({result: true, patientsToSee: allPatientsToSee})
     })
 
-})
-
+});
 
 
 ///////////// récupération d'un patient :
