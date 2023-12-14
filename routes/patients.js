@@ -102,26 +102,50 @@ router.delete('/deletePatient/:_id', (req, res)=> {
 ///////////// recupération de tous les patients à voir pour le jour :
 
 router.post('/allPatients', (req, res) => {
+    
+    ///////// traitement de la date envoyée :  
+    const newDate = new Date(req.body.dateOfToday);
+    const targetDate = newDate.getDate();
+    const targetMonth = newDate.getMonth() + 1;
+    const targetYear = newDate.getFullYear();
+
     Patient.find({officeToken: req.body.officeToken}).then(data => {
-        const newDate = new Date(req.body.dateOfToday);
-        const newDateBefore = newDate.setHours(1,0,0,0);
-        const newDateLater = newDate.setHours(25,0,0,0);
-        let allPatientsToSee;
-        
-        for (const patient in data){
-            allTreatments = patient.treatments
+        let allPatientsToSee = [];
+        for (const patient of data){
+            let allTreatments = patient.treatments
             for (let i=0; i<allTreatments.length; i++) {
-                if (allTreatments[i].date <= newDateLater && allTreatments[i].date >= newDateBefore) {
-                    allPatientsToSee.push(patient)
+
+    ///////// traitement de la date trouvée :  
+
+                const jour = allTreatments[i].date.getDate();
+                const mois = allTreatments[i].date.getMonth()+1;
+                const annee = allTreatments[i].date.getFullYear();
+
+    //////// comparaison des dates :
+                if (annee === targetYear && jour === targetDate && mois === targetMonth){
+                    const minutes = allTreatments[i].date.getMinutes();
+                    const hours = allTreatments[i].date.getHours()-1;
+    
+                    const formattedMinutes = String(minutes).padStart(2, '0');
+                    const formattedHours = String(hours).padStart(2, '0');
+
+    /////////// création de l'objet retourné par date correspondante :
+                    const infosToHave = {
+                        _id: patient._id,
+                        name : patient.name,
+                        firstname : patient.firstname,
+                        hour: `${formattedHours}:${formattedMinutes}`,
+                        actions: allTreatments[i].actions,
+                        address : patient.address,
+                        infosAddress: patient.infosAddress,
+                        treatmentState: allTreatments[i].state,
+                    } 
+                    allPatientsToSee.push(infosToHave)
                 }
             }
         }
-        res.json({result: true, patientsToSee: allPatientsToSee})
-
-    //     const allPatientsToSee =  data.filter(patient => 
-    //         patient.treatments[0].date < newDateLater && patient.treatments[0].date >= newDateBefore);
-    //      res.json({result: true, patientsToSee: allPatientsToSee})
-    })
+       res.json({result: true, patientsToSee: allPatientsToSee})
+    });
 
 });
 
