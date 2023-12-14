@@ -133,12 +133,24 @@ router.post('/allPatients', (req, res) => {
         const newDate = new Date(req.body.dateOfToday);
         const newDateBefore = newDate.setHours(1,0,0,0);
         const newDateLater = newDate.setHours(25,0,0,0);
-        const allPatientsToSee =  data.filter(patient => patient.treatments[0].date < newDateLater && patient.treatments[0].date >= newDateBefore);
-         res.json({result: true, patientsToSee: allPatientsToSee})
+        let allPatientsToSee;
+        
+        for (const patient in data){
+            allTreatments = patient.treatments
+            for (let i=0; i<allTreatments.length; i++) {
+                if (allTreatments[i].date <= newDateLater && allTreatments[i].date >= newDateBefore) {
+                    allPatientsToSee.push(patient)
+                }
+            }
+        }
+        res.json({result: true, patientsToSee: allPatientsToSee})
+
+    //     const allPatientsToSee =  data.filter(patient => 
+    //         patient.treatments[0].date < newDateLater && patient.treatments[0].date >= newDateBefore);
+    //      res.json({result: true, patientsToSee: allPatientsToSee})
     })
 
-})
-// && patient.treatments[0].date > newDateBefore
+});
 
 
 ///////////// récupération d'un patient :
