@@ -109,7 +109,7 @@ router.post('/allPatients', (req, res) => {
     const targetMonth = newDate.getMonth() + 1;
     const targetYear = newDate.getFullYear();
 
-    Patient.find({officeToken: req.body.officeToken}).then(data => {
+    Patient.find({officeToken: req.body.officeToken[0].token}).then(data => {
         let allPatientsToSee = [];
         for (const patient of data){
             let allTreatments = patient.treatments
@@ -138,6 +138,8 @@ router.post('/allPatients', (req, res) => {
                         actions: allTreatments[i].actions,
                         address : patient.address,
                         infosAddress: patient.infosAddress,
+                        mobile: patient.mobile,
+                        homePhone: patient.homePhone,
                         treatmentState: allTreatments[i].state,
                     } 
                     allPatientsToSee.push(infosToHave)
@@ -166,6 +168,13 @@ router.get('/allPatientDay', (req, res) => {
     });
    });
 
+
+//////////////// route de test d'ophélie :
+router.get('/allPatientDay', (req, res) => {
+    Patient.find().then(data => {
+    res.json({ patientsToSee: data });
+    });
+    });
 
 
 module.exports = router;
