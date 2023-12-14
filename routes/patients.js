@@ -11,11 +11,11 @@ const { checkBody } = require('../modules/checkBody');
 
 router.post('/addPatient', (req,res) => {
 
-    if (!checkBody(req.body, ['name', 'firstname', 'road', 'city'])) {
+    if (!checkBody(req.body, ['name', 'firstname'])) {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
     };
-
+    console.log(req.body)
     const newPatient = new Patient ({
         officeToken: req.body.officeToken,
         name: req.body.name,
@@ -27,23 +27,23 @@ router.post('/addPatient', (req,res) => {
         mobile: req.body.mobile, 
         treatments:[{
             state: false,
-            date: req.body.treatmentDate,
-            actions: [req.body.actions],
-            nurse: req.body.username,
+            date: req.body.treatments[0].treatmentDate,
+            actions: req.body.treatments[0].actions,
+            nurse: req.body.treatments[0].username,
             documentsOfTreatment: [{
-                creationDate: req.body.creationDateOfDocumentsOfTreatment,
-                urls: [req.body.urlsOfDocumentsOfTreatment]
+                creationDate: req.body.treatments[0].documentsOfTreatment[0].creationDateOfDocumentsOfTreatment,
+                urls: [req.body.treatments[0].documentsOfTreatment[0].urlsOfDocumentsOfTreatment]
             }],
         }],
         documents: [{
-            creationDate: req.body.creationDateOfDocument,
-            url: req.body.urlOfDocument
+            creationDate: req.body.documents[0].creationDateOfDocument,
+            url: req.body.documents[0].urlOfDocument
         }],    
         transmissions: [{
-                date: req.body.transmissionDate,
-                nurse : req.body.username,
-                info : req.body.info,
-                urlDocument: req.body.urlDocument,    
+                date: req.body.transmissions[0].transmissionDate,
+                nurse : req.body.transmissions[0].username,
+                info : req.body.transmissions[0].info,
+                urlDocument: req.body.transmissions[0].urlDocument,    
         }],
         disponibility: true,
         ICEIdentity: req.body.ICEIdentity,
@@ -113,6 +113,8 @@ router.get('/patient/:_id', (req,res) => {
         
     })
 })
+
+//Random patient
 
 
 
