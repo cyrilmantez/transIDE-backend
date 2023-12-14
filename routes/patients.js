@@ -17,8 +17,8 @@ router.post('/addPatient', (req,res) => {
     };
     console.log(req.body)
     const newPatient = new Patient ({
-        //officeToken: req.body.officeToken,
-        officeToken: 'vdDiOxapy8T3uUGLmyEy-jG6shv6qyQJ',
+        officeToken: req.body.officeToken[0].token,
+        //officeToken: 'vdDiOxapy8T3uUGLmyEy-jG6shv6qyQJ',
         name: req.body.name,
         firstname: req.body.firstname,
         yearOfBirthday : req.body.dateOfBirthday,
@@ -31,8 +31,8 @@ router.post('/addPatient', (req,res) => {
         mobile: 'req.body.mobile',
         treatments:[{
             state: false,
-            date: req.body.treatmentDate,
-            actions: [req.body.actions],
+            date: req.body.treatments[0].treatmentDate,
+            actions: req.body.treatments[0].actions,
             nurse: req.body.username,
             documentsOfTreatment: [{
                 creationDate: req.body.creationDateOfDocumentsOfTreatment,
@@ -135,7 +135,12 @@ router.get('/patient/:_id', (req,res) => {
     })
 })
 
-//Random patient
+//All patient : 
+router.get('/allPatientDay', (req, res) => {
+    Patient.find().then(data => {
+      res.json({ allPatient: data });
+    });
+   });
 
 
 
