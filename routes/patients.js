@@ -141,6 +141,7 @@ router.post('/allPatients', (req, res) => {
                         mobile: patient.mobile,
                         homePhone: patient.homePhone,
                         treatmentState: allTreatments[i].state,
+                        date: allTreatments[i].date,
                     } 
                     allPatientsToSee.push(infosToHave)
                 }
@@ -161,12 +162,25 @@ router.get('/patient/:_id', (req,res) => {
     })
 })
 
-//All patient : 
+//////All patient : 
 router.get('/allPatientDay', (req, res) => {
     Patient.find().then(data => {
       res.json({ allPatient: data });
     });
    });
+
+////////////update treatment :
+router.put('/updateTreatment', (req, res) => {
+    Patient.findOne({_id: req.body._id}).then(data =>{
+        for (let i=0; i<data.treatments.length; i++){
+
+        }
+        Patient.updateOne({_id: req.body._id},{}).then(data => {
+            res.json({result : true})
+        })
+    });
+})
+
 
 
 //////////////// route de test d'ophélie :

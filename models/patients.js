@@ -11,7 +11,9 @@ const documentsOfTreatmentSchema = mongoose.Schema({
 
 //////////: sous document: consultation :
 const treatmentsSchema = mongoose.Schema({
-    state : Boolean,
+    isVisited : Boolean,
+    isOk: Boolean,
+    isModified: Boolean,
     date : Date,          /*avec heure*/
     actions: [String],
     nurse: String,
