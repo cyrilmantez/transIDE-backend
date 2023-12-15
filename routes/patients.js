@@ -138,6 +138,7 @@ router.post('/allPatients', (req, res) => {
                         isOk: allTreatments[i].isOk,
                         isOkWithModification: allTreatments[i].isOkWithModification,
                         _idTreatment: allTreatments[i]._id,
+                        dateTreatment: allTreatments[i].date,
                     } 
                     allPatientsToSee.push(infosToHave)
                 }
