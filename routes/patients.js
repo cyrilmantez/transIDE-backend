@@ -121,22 +121,21 @@ router.post('/allPatients', (req, res) => {
                         const formattedMinutes = String(minutes).padStart(2, '0');
                         const formattedHours = String(hours).padStart(2, '0');
 
-                        const infosToHave = {
-                            _id: patient._id,
-                            name : patient.name,
-                            firstname : patient.firstname,
-                            hour: `${formattedHours}:${formattedMinutes}`,
-                            actions: allTreatments[i].actions,
-                            address : patient.address,
-                            infosAddress: patient.infosAddress,
-                            mobile: patient.mobile,
-                            homePhone: patient.homePhone,
-                            treatmentState: allTreatments[i].state,
-                        } 
-                        allPatientsToSee.push(infosToHave)
-                    }
-                } else {
-                    console.log(`Le traitement ${i} pour le patient ${patient.name} n'a pas de date.`);
+    /////////// création de l'objet retourné par date correspondante :
+                    const infosToHave = {
+                        _id: patient._id,
+                        name : patient.name,
+                        firstname : patient.firstname,
+                        hour: `${formattedHours}:${formattedMinutes}`,
+                        actions: allTreatments[i].actions,
+                        address : patient.address,
+                        infosAddress: patient.infosAddress,
+                        mobile: patient.mobile,
+                        homePhone: patient.homePhone,
+                        treatmentState: allTreatments[i].state,
+                        date: allTreatments[i].date,
+                    } 
+                    allPatientsToSee.push(infosToHave)
                 }
             }
         }
@@ -154,12 +153,25 @@ router.get('/patient/:_id', (req,res) => {
     })
 })
 
-//All patient : 
+//////All patient : 
 router.get('/allPatientDay', (req, res) => {
     Patient.find().then(data => {
       res.json({ allPatient: data });
     });
    });
+
+////////////update treatment :
+router.put('/updateTreatment', (req, res) => {
+    Patient.findOne({_id: req.body._id}).then(data =>{
+        for (let i=0; i<data.treatments.length; i++){
+
+        }
+        Patient.updateOne({_id: req.body._id},{}).then(data => {
+            res.json({result : true})
+        })
+    });
+})
+
 
 
 //////////////// route de test d'ophélie :
