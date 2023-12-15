@@ -167,18 +167,28 @@ router.get('/allPatientDay', (req, res) => {
 
 ////////////update treatment :
 router.put('/updateTreatment', (req, res) => {
-    Patient.findOne({_id: req.body._id}).then(data =>{
-        for (let i=0; i<data.treatments.length; i++){
-            if (data.treatments[i].date) {
+    Patient.findById({_id: req.body._id}).then(data => {
 
+        const newData = data.treatments.map(treatment => {
+            if (treatment._id === req.body._idTreatment) {
+                treatment = {
+                    _id: treatment._id,
+                    isVisited : req.body.isVisited,
+                    isOk: req.body.isOk,
+                    isOkWithModification: req.body.isOkWithModification,
+                    date : treatment.date,
+                    actions: req.body.actions,
+                    nurse: req.body.nurse,
+                    documentsOfTreatment: treatment.documentsOfTreatmentSchema,
+                }
             }
-        }
-        Patient.updateOne({_id: req.body._id},{}).then(data => {
-            res.json({result : true})
         })
+        Patient.updateOne({_id : data._id}, {treatments: newData}).then(data => {
+            res.json({result : true, modification: data})
+        });    
+    
     });
-})
-
+});
 
 
 //////////////// route de test d'ophélie :
