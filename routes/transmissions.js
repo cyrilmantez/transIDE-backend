@@ -5,7 +5,7 @@ require('../models/connection');
 const Patient = require('../models/patients');
 const { checkBody } = require('../modules/checkBody');
 
-router.get('/allTransmissions/:date',(req, res) => {
+router.get('/allTransmissions/:token/:date',(req, res) => {
     const requestDate = new Date(req.params.date)
     requestDate.setHours(1, 0, 0, 0);
     console.log(requestDate)
