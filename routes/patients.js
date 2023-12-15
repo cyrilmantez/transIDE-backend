@@ -139,6 +139,7 @@ router.post('/allPatients', (req, res) => {
                 }
             }
         }
+    }
        res.json({result: true, patientsToSee: allPatientsToSee})
     });
 });
