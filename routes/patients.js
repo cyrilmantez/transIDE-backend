@@ -161,7 +161,15 @@ router.get('/patient/:_id', (req,res) => {
 //////All patient : 
 router.get('/allPatientDay', (req, res) => {
     Patient.find().then(data => {
-      res.json({ allPatient: data });
+        console.log(data)
+        const allPatients = [];
+        for (let element of data) {
+            allPatients.push({
+                name : element.name,
+                firstname : element.firstname,
+            }) 
+        }
+      res.json({result : true, Patients : allPatients});
     });
    });
 
@@ -192,11 +200,11 @@ router.put('/updateTreatment', (req, res) => {
 
 
 //////////////// route de test d'ophélie :
-router.get('/allPatientDay', (req, res) => {
+/*router.get('/allPatientDay', (req, res) => {
     Patient.find().then(data => {
     res.json({ patientsToSee: data });
     });
     });
-
+*/
 
 module.exports = router;

@@ -5,11 +5,11 @@ require('../models/connection');
 const Patient = require('../models/patients');
 const { checkBody } = require('../modules/checkBody');
 
-router.get('/allTransmissions/:date',(req, res) => {
+router.get('/allTransmissions/:token/:date',(req, res) => {
     const requestDate = new Date(req.params.date)
     requestDate.setHours(1, 0, 0, 0);
-    console.log(requestDate)
-    Patient.find({'transmissions.date':{$gt:requestDate}}).then(data => {
+    
+    Patient.find({officeToken : req.params.token,'transmissions.date':{$gt:requestDate}}).then(data => {
         console.log(data);
        if (data.length>0) {
             const transmissionsArray =[];
