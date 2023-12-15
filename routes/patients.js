@@ -11,7 +11,7 @@ const { checkBody } = require('../modules/checkBody');
 
 router.post('/addPatient', (req,res) => {
 
-    if (!checkBody(req.body, ['name', 'firstname'])) {
+    if (!checkBody(req.body, ['name', 'firstname', 'address'])) {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
     };
@@ -27,7 +27,9 @@ router.post('/addPatient', (req,res) => {
         homePhone : req.body.homePhone,
         mobile: req.body.mobile,
         treatments:[{
-            state: false,
+            isVisited : false,
+            isOk: false,
+            isOkWithModification: false,
             date: req.body.treatments[0].date,
             actions: req.body.treatments[0].actions,
             nurse: req.body.treatments[0].nurse,
@@ -71,7 +73,7 @@ router.put('/updatePatientById', (req, res)=> {
 
 
 
-////////////// ajouter des soins à un patient :
+////////////// ajouter une consultation à un patient :
 
 router.put('/addTreatment', (req, res) => {
     Patient.updateOne({_id: req.body._id}, {treatments : [...treatments, req.body]}).then(data => {
@@ -132,8 +134,10 @@ router.post('/allPatients', (req, res) => {
                         infosAddress: patient.infosAddress,
                         mobile: patient.mobile,
                         homePhone: patient.homePhone,
-                        treatmentState: allTreatments[i].state,
-                        date: allTreatments[i].date,
+                        isVisited : allTreatments[i].isVisited,
+                        isOk: allTreatments[i].isOk,
+                        isOkWithModification: allTreatments[i].isOkWithModification,
+                        _idTreatment: allTreatments[i]._id,
                     } 
                     allPatientsToSee.push(infosToHave)
                 }
@@ -165,7 +169,9 @@ router.get('/allPatientDay', (req, res) => {
 router.put('/updateTreatment', (req, res) => {
     Patient.findOne({_id: req.body._id}).then(data =>{
         for (let i=0; i<data.treatments.length; i++){
+            if (data.treatments[i].date) {
 
+            }
         }
         Patient.updateOne({_id: req.body._id},{}).then(data => {
             res.json({result : true})

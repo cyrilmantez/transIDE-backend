@@ -13,7 +13,7 @@ const documentsOfTreatmentSchema = mongoose.Schema({
 const treatmentsSchema = mongoose.Schema({
     isVisited : Boolean,
     isOk: Boolean,
-    isModified: Boolean,
+    isOkWithModification: Boolean,
     date : Date,          /*avec heure*/
     actions: [String],
     nurse: String,
