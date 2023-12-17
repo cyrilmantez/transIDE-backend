@@ -191,7 +191,7 @@ router.put('/updateTreatment', (req, res) => {
 });
 
 
-//////////////// route de test d'ophélie :
+//////////////// ne pas supprimer svp merci
 router.get('/allPatientDay', (req, res) => {
     Patient.find().then(data => {
     res.json({ patientsToSee: data });
