@@ -138,7 +138,6 @@ router.post('/allPatients', (req, res) => {
                         isOk: allTreatments[i].isOk,
                         isOkWithModification: allTreatments[i].isOkWithModification,
                         _idTreatment: allTreatments[i]._id,
-                        dateTreatment: allTreatments[i].date,
                     } 
                     allPatientsToSee.push(infosToHave)
                 }
@@ -162,15 +161,7 @@ router.get('/patient/:_id', (req,res) => {
 //////All patient : 
 router.get('/allPatientDay', (req, res) => {
     Patient.find().then(data => {
-        console.log(data)
-        const allPatients = [];
-        for (let element of data) {
-            allPatients.push({
-                name : element.name,
-                firstname : element.firstname,
-            }) 
-        }
-      res.json({result : true, Patients : allPatients});
+      res.json({ allPatient: data });
     });
    });
 
@@ -200,10 +191,10 @@ router.put('/updateTreatment', (req, res) => {
 });
 
 
-//////////////// ne pas supprimer svp merci
+//////////////// ne pas supprimer svp
 router.get('/allPatientDay', (req, res) => {
     Patient.find().then(data => {
-    res.json({ patientsToSee: data });
+    res.json({ allPatient: data });
     });
     });
 
