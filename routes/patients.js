@@ -159,8 +159,8 @@ router.get('/patient/:_id', (req,res) => {
 })
 
 //////All patient : 
-router.get('/allPatientDay', (req, res) => {
-    Patient.find().then(data => {
+router.get('/allPatientDay/:token', (req, res) => {
+    Patient.find({officeToken : req.params.token}).then(data => {
         console.log(data)
         const allPatients = [];
         for (let element of data) {
