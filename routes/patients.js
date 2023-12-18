@@ -15,7 +15,7 @@ router.post('/addPatient', (req,res) => {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
     };
-    console.log(req.body)
+    
     const newPatient = new Patient ({
         officeToken: req.body.officeToken[0].token,
         //officeToken: 'vdDiOxapy8T3uUGLmyEy-jG6shv6qyQJ',
@@ -104,15 +104,18 @@ router.post('/allPatients', (req, res) => {
     const targetMonth = newDate.getMonth() + 1;
     const targetYear = newDate.getFullYear();
 
-    Patient.find({officeToken: req.body.officeToken[0].token}).then(data => {
-
+    Patient.find({officeToken: req.body.officeToken}).then(data => {
         let allPatientsToSee = [];
+       // console.log(data)
         for (const patient of data){
-            let allTreatments = patient.treatments
-            for (let i=0; i<allTreatments.length; i++) {
+        
+            let allTreatments = [...patient.treatments]
 
+        //console.log('allTreatments', allTreatments)
+            for (let i=0; i<allTreatments.length; i++) {
+                //console.log('allTreatments', allTreatments[i])
                 // Vérifiez si la date existe avant d'essayer d'accéder à ses propriétés
-                if (allTreatments[i].date) {
+                if (allTreatments[i] && allTreatments[i].date) {
                     const jour = allTreatments[i].date.getDate();
                     const mois = allTreatments[i].date.getMonth()+1;
                     const annee = allTreatments[i].date.getFullYear();
@@ -139,7 +142,8 @@ router.post('/allPatients', (req, res) => {
                         isOk: allTreatments[i].isOk,
                         isOkWithModification: allTreatments[i].isOkWithModification,
                         _idTreatment: allTreatments[i]._id,
-                        date: allTreatments[i].date
+                        date: allTreatments[i].date,
+                        documentsOfTreatment: allTreatments[i].documentsOfTreatment
                     } 
                     allPatientsToSee.push(infosToHave)
                 }
@@ -151,8 +155,8 @@ router.post('/allPatients', (req, res) => {
 });
 
 
-///////////// récupération d'un patient :
 
+///////////// récupération d'un patient :
 router.get('/patient/:_id', (req,res) => {
     Patient.findById({_id: req.params._id}).then(data => {
         res.json({result: true, patient: data})
@@ -175,23 +179,27 @@ router.get('/allPatients/:token', (req, res) => {
     });
    });
 
+
 ////////////update treatment :
 router.put('/updateTreatment', (req, res) => {
     Patient.findById({_id: req.body._id}).then(data => {
-
+       
         const newData = data.treatments.map(treatment => {
-            if (treatment._id === req.body._idTreatment) {
-                treatment = {
-                    _id: treatment._id,
-                    isVisited : req.body.isVisited,
-                    isOk: req.body.isOk,
-                    isOkWithModification: req.body.isOkWithModification,
-                    date : treatment.date,
-                    actions: req.body.actions,
-                    nurse: req.body.nurse,
-                    documentsOfTreatment: treatment.documentsOfTreatmentSchema,
-                }
+            const tempTreatment = {}
+            //console.log(treatment._id, req.body._idTreatment)
+           // console.log(tempTreatment, req.body._idTreatment)
+            if (treatment._id.toString() === req.body._idTreatment.toString()) {
+                console.log('ok')
+                    tempTreatment.isVisited = req.body.isVisited;
+                    tempTreatment.isOk= req.body.isOk;
+                    tempTreatment.isOkWithModification= req.body.isOkWithModification;
+                    tempTreatment.date = req.body.date;
+                    tempTreatment.actions= req.body.actions;
+                    tempTreatment.nurse= req.body.nurse;
+                    tempTreatment.documentsOfTreatment= req.body.documentsOfTreatment;
+               
             }
+            return tempTreatment
         })
         Patient.updateOne({_id : data._id}, {treatments: newData}).then(data => {
             res.json({result : true, modification: data})
