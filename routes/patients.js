@@ -173,6 +173,7 @@ router.get('/allPatients/:token', (req, res) => {
             allPatients.push({
                 name : element.name,
                 firstname : element.firstname,
+                yearOfBirthday: element.yearOfBirthday,
             }) 
         }
       res.json({result : true, Patients : allPatients});
