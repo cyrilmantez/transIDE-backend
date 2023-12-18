@@ -111,7 +111,7 @@ router.post('/allPatients', (req, res) => {
             for (let i=0; i<allTreatments.length; i++) {
 
                 // Vérifiez si la date existe avant d'essayer d'accéder à ses propriétés
-                if (allTreatments[i].date) {
+                if (allTreatments[i] && allTreatments[i].date) {
                     const jour = allTreatments[i].date.getDate();
                     const mois = allTreatments[i].date.getMonth()+1;
                     const annee = allTreatments[i].date.getFullYear();
@@ -149,8 +149,16 @@ router.post('/allPatients', (req, res) => {
     });
 });
 
+///////////// récupération d'un patient par nom :
 
-///////////// récupération d'un patient :
+router.get('/patient/:name', (req,res) => {
+    Patient.find({name: req.params.name}).then(data => {
+        res.json({result: true, patient: data})
+        
+    })
+})
+
+///////////// récupération d'un patient par id :
 
 router.get('/patient/:_id', (req,res) => {
     Patient.findById({_id: req.params._id}).then(data => {
