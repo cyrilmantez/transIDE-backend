@@ -105,6 +105,7 @@ router.post('/allPatients', (req, res) => {
     const targetYear = newDate.getFullYear();
 
     Patient.find({officeToken: req.body.officeToken[0].token}).then(data => {
+
         let allPatientsToSee = [];
         for (const patient of data){
             let allTreatments = patient.treatments
@@ -159,7 +160,7 @@ router.get('/patient/:_id', (req,res) => {
 })
 
 //////All patient : 
-router.get('/allPatientDay/:token', (req, res) => {
+router.get('/allPatients/:token', (req, res) => {
     Patient.find({officeToken : req.params.token}).then(data => {
         console.log(data)
         const allPatients = [];
