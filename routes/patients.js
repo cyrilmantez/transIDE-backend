@@ -143,7 +143,8 @@ router.post('/allPatients', (req, res) => {
                         isOkWithModification: allTreatments[i].isOkWithModification,
                         _idTreatment: allTreatments[i]._id,
                         date: allTreatments[i].date,
-                        documentsOfTreatment: allTreatments[i].documentsOfTreatment
+                        documentsOfTreatment: allTreatments[i].documentsOfTreatment,
+                        yearOfBirthday: patient.yearOfBirthday,
                     } 
                     allPatientsToSee.push(infosToHave)
                 }
@@ -155,6 +156,13 @@ router.post('/allPatients', (req, res) => {
 });
 
 
+///////////// récupération d'un patient par nom :
+router.get('/patient/:name', (req,res) => {
+    Patient.find({name: req.params.name}).then(data => {
+    res.json({result: true, patient: data})
+    
+    })
+})
 
 ///////////// récupération d'un patient :
 router.get('/patientById/:_id', (req,res) => {
@@ -164,8 +172,8 @@ router.get('/patientById/:_id', (req,res) => {
     })
 })
 
-//////All patient : 
-router.get('/allPatients/:token', (req, res) => {
+//////All patient day by token: 
+router.get('/allPatientDay/:token', (req, res) => {
     Patient.find({officeToken : req.params.token}).then(data => {
         console.log(data)
         const allPatients = [];
@@ -184,13 +192,11 @@ router.get('/allPatients/:token', (req, res) => {
 ////////////update treatment :
 router.put('/updateTreatment', (req, res) => {
     Patient.findById({_id: req.body._id}).then(data => {
-       
+       console.log(data);
         const newData = data.treatments.map(treatment => {
             const tempTreatment = {}
-            //console.log(treatment._id, req.body._idTreatment)
-           // console.log(tempTreatment, req.body._idTreatment)
             if (treatment._id.toString() === req.body._idTreatment.toString()) {
-                console.log('ok')
+                //console.log('ok')
                     tempTreatment.isVisited = req.body.isVisited;
                     tempTreatment.isOk= req.body.isOk;
                     tempTreatment.isOkWithModification= req.body.isOkWithModification;
