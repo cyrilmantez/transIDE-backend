@@ -157,7 +157,7 @@ router.post('/allPatients', (req, res) => {
 
 
 ///////////// récupération d'un patient :
-router.get('/patient/:_id', (req,res) => {
+router.get('/patientById/:_id', (req,res) => {
     Patient.findById({_id: req.params._id}).then(data => {
         res.json({result: true, patient: data})
         
