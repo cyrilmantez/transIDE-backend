@@ -193,7 +193,7 @@ router.get('/allPatientDay/:token', (req, res) => {
 ////////////update treatment :
 router.put('/updateTreatment', (req, res) => {
     Patient.findById({_id: req.body._id}).then(data => {
-       
+       console.log(data);
         const newData = data.treatments.map(treatment => {
             const tempTreatment = {}
             if (treatment._id.toString() === req.body._idTreatment.toString()) {
