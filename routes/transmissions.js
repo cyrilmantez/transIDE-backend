@@ -26,6 +26,7 @@ router.get('/allTransmissions/:token/:date',(req, res) => {
                     }
                 }
             }
+            console.log(transmissionsArray)
             res.json({result:true,transmissions : transmissionsArray})
             }else{
             res.json({result:false, error : 'no transmission after the specified date'})
@@ -38,24 +39,12 @@ router.get('/allTransmissions/:token/:date',(req, res) => {
     })
 
 router.post('/addtransmission', (req, res) => {
-    const {date, nurse, info, _id, document} = req.body
-    const newTransmission =
-    {
-        date,
-        nurse,
-        info,
-        document,
-    }
-    Patient.updateOne({_id}, {transmissions : [...transmissions,newTransmission]}).then(() => {
-        if(document){
-            Patient.updateOne({_id},{documents:[...documents,document]}).then(() => console.log('ok'))
-        }
-        res.json({result:true})
-    }).catch(error => {
-        // Gérer les erreurs liées à la recherche dans la base de données
-        console.error(error);
-        res.status(500).json({ result: false, error: 'Internal server error' });
-      });
+    const {transmission, patient, token} = req.body
+    Patient.findOne({name:patient.name, yearOfBirthday:patient.yearOfBirthday, officeToken:token}).then((data) => {
+        Patient.updateOne({_id:data._id},{transmissions : [...data.transmissions,transmission]}).then(() => {
+            res.json({result:true})
+        })
+    })
 })
 
 
