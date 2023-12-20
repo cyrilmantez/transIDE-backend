@@ -76,7 +76,7 @@ router.put('/updatePatientById', (req, res)=> {
 ////////////// ajouter une consultation à un patient :
 
 router.put('/addTreatment', (req, res) => {
-    Patient.updateOne({_id: req.body._id}, {treatments : [...treatments, req.body]}).then(data => {
+    Patient.updateOne({_id: req.body._id}, {treatments : [...treatments, ...req.body]}).then(data => {
         res.json({result: true})
     })
 })
@@ -173,7 +173,7 @@ router.get('/patientById/:_id', (req,res) => {
     })
 })
 
-//////All patient day by token: 
+//////All patients by token: 
 router.get('/allPatients/:token', (req, res) => {
     Patient.find({officeToken : req.params.token}).then(data => {
         console.log(data)
