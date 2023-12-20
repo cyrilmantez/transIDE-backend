@@ -42,7 +42,7 @@ router.post('/addtransmission', (req, res) => {
     const {transmission, patient, token} = req.body
     Patient.findOne({name:patient.name, yearOfBirthday:patient.yearOfBirthday, officeToken:token}).then((data) => {
         Patient.updateOne({_id:data._id},{transmissions : [...data.transmissions,transmission]}).then(() => {
-            res.json({result:true})
+            res.json({result:true, newTransmission: data})
         })
     })
 })
