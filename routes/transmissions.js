@@ -44,7 +44,7 @@ router.post('/addtransmission', (req, res) => {
         Patient.findOne({name:patient.name, officeToken:token}).then((data) => {
         console.log('retour transmission' ,data)
         Patient.updateOne({_id:data._id},{transmissions : [...data.transmissions,transmission]}).then(() => {
-            res.json({result:true})
+            res.json({result:true, newTransmission: data})
         })
     })
     }else{
