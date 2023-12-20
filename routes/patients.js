@@ -167,7 +167,7 @@ router.get('/patientByName/:name', (req,res) => {
 
 ///////////// récupération d'un patient par Id:
 router.get('/patientById/:_id', (req,res) => {
-    Patient.findById(req.params._id).then(data => {
+    Patient.findById({_id: req.params._id}).then(data => {
         res.json({result: true, patient: data})
         
     })
