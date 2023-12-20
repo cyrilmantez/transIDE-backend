@@ -157,7 +157,7 @@ router.post('/allPatients', (req, res) => {
 
 
 ///////////// récupération d'un patient par nom :
-router.get('/patient/:name', (req,res) => {
+router.get('/patientByName/:name', (req,res) => {
     Patient.find({name: req.params.name}).then(data => {
     res.json({result: true, patient: data})
     
@@ -166,15 +166,15 @@ router.get('/patient/:name', (req,res) => {
 
 
 ///////////// récupération d'un patient par Id:
-router.get('/patient/:_id', (req,res) => {
-    Patient.findById({_id: req.params._id}).then(data => {
+router.get('/patientById/:_id', (req,res) => {
+    Patient.findById(req.params._id).then(data => {
         res.json({result: true, patient: data})
         
     })
 })
 
 //////All patient day by token: 
-router.get('/allPatientDay/:token', (req, res) => {
+router.get('/allPatients/:token', (req, res) => {
     Patient.find({officeToken : req.params.token}).then(data => {
         console.log(data)
         const allPatients = [];
