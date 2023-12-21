@@ -40,16 +40,17 @@ router.get('/allTransmissions/:token/:date',(req, res) => {
 
 router.post('/addtransmission', (req, res) => {
     const {transmission, patient, token} = req.body;
+    console.log('patient :', patient, 'token :', token)
     if(patient.name === 'Général'){
         Patient.findOne({name:patient.name, officeToken:token}).then((data) => {
-        console.log('retour transmission' ,data)
+        console.log('retour transmission1' ,data)
         Patient.updateOne({_id:data._id},{transmissions : [...data.transmissions,transmission]}).then(() => {
             res.json({result:true, newTransmission: data})
         })
     })
     }else{
         Patient.findOne({name:patient.name, yearOfBirthday: patient.yearOfBirthday, officeToken:token}).then((data) => {
-            console.log('retour transmission' ,data)
+            console.log('retour transmission2' ,data)
             Patient.updateOne({_id:data._id},{transmissions : [...data.transmissions,transmission]}).then(() => {
                 res.json({result:true})
             })
