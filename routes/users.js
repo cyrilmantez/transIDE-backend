@@ -27,7 +27,8 @@ router.post('/signup', (req, res) => {
           name : `officeOf${req.body.username}`,
           token : uid2(32),
           isByDefault : true,
-        }]
+        }],
+        colorMode: false,
       });
       newUser.save().then(newDoc => {
         res.json({ result: true, token: newDoc.token, officesToken : newDoc.officesToken });
