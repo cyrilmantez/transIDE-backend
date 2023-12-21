@@ -74,4 +74,47 @@ router.get('/', (req, res) => {
   });
 });
 
+//ROUTE POUR MODIFIER LE TABLEAU DES OFFICESTOKENS
+router.put('/newOfficesToken', (req, res)=> {
+  const {token, officesTokens, officeByDefault} = req.body;
+  console.log('by default :', officeByDefault);
+  User.updateOne({token : token},{officesToken: officesTokens}).then(data => {
+    if(data.matchedCount === 1){
+      User.find({'officesToken.token' : officeByDefault}).then(data => {
+        console.log(data);
+        const allIDE = data.map(e => e = {username : e.username});
+        console.log('allIDE' , allIDE);
+          res.json({result : true, allIDE})
+      })
+    }else{
+      res.json({error : false})
+    }
+  })
+})
+
+//ROUTE POUR AJOUTER UN NOUVEL OFFICE (CABINET)
+router.post('/newOffice', (req, res)=> {
+  const {officeToken, token} = req.body;
+  User.findOne({'officesToken.token':officeToken}).then(data => {
+    console.log(data);
+    if(data){
+      const newOffice = data.officesToken.filter(e => e.token === officeToken);
+      newOffice[0].isByDefault = false;
+      User.findOne({token:token}).then(data => {
+        if(data){
+          const newOfficesTokens = [...data.officesToken, newOffice[0]];
+          User.updateOne({token:token},{officesToken : newOfficesTokens}).then(() => {
+              res.json({result : true, newOffice : newOffice[0]});
+          })
+        }else{
+          res.json({error : false});
+        }
+      })
+    }else{
+      res.json({error : false})
+    }
+  })
+})
+
+
 module.exports = router;
