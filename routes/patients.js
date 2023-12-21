@@ -179,6 +179,7 @@ router.get('/allPatientDay/:token', (req, res) => {
         const allPatients = [];
         for (let element of data) {
             allPatients.push({
+                _id: element._id,
                 name : element.name,
                 firstname : element.firstname,
                 yearOfBirthday: element.yearOfBirthday,
@@ -222,6 +223,5 @@ router.get('/allPatientDay', (req, res) => {
     res.json({ allPatient: data });
     });
     });
-
 
 module.exports = router;
