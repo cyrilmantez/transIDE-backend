@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema({
     token : String,
     isByDefault : Boolean,
   }],
+  colorMode: Boolean,
 });
 
 const User = mongoose.model('users', userSchema);
