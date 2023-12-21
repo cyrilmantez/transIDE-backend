@@ -76,12 +76,14 @@ router.put('/updatePatientById', (req, res)=> {
 ////////////// ajouter une consultation à un patient :
 
 router.put('/addTreatment', (req, res) => {
-    Patient.updateOne({_id: req.body._id}, {treatments : [...treatments, ...req.body.newTreatments]}).then(data => {
-        res.json({result: true})
+    Patient.findById(req.body._id).then(data1 => {
+         let allNewTreatments = [...data1.treatments, ...req.body.newTreatments]
+         Patient.updateOne({_id : data1._id}, {treatments: allNewTreatments}).then(data => {
+            res.json({result: true})
+         })
+        
     })
 })
-
-
 
 
 
