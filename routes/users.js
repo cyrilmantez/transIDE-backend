@@ -24,7 +24,7 @@ router.post('/signup', (req, res) => {
         password: hash,
         token: uid2(32),
         officesToken : [{
-          name : `officeOf${req.body.username}`,
+          name : `Cabinet de ${req.body.username}`,
           token : uid2(32),
           isByDefault : true,
         }],
@@ -68,6 +68,8 @@ router.delete('/delete', (req, res) => {
     })
   });
 });
+
+
 //ROUTE DE TEST POUR RECUPERER TOUS LES USERS
 router.get('/', (req, res) => {
   User.find().then((data) => {
