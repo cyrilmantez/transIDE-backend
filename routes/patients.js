@@ -196,32 +196,25 @@ router.get('/allPatients/:token', (req, res) => {
 
 ////////////update treatment :
 router.put('/updateTreatment', (req, res) => {
-    Patient.findById({_id: req.body._id}).then(data => {
-       console.log(data);
-        const newData = data.treatments.map(treatment => {
-            const tempTreatment = {}
-            if (treatment._id.toString() === req.body._idTreatment.toString()) {
-                //console.log('ok')
-                    tempTreatment.isVisited = req.body.isVisited;
-                    tempTreatment.isOk= req.body.isOk;
-                    tempTreatment.isOkWithModification= req.body.isOkWithModification;
-                    tempTreatment.date = req.body.date;
-                    tempTreatment.actions= req.body.actions;
-                    tempTreatment.nurse= req.body.nurse;
-                    tempTreatment.documentsOfTreatment= req.body.documentsOfTreatment;
-               
-            }
-            return tempTreatment
-        })
-        Patient.updateOne({_id : data._id}, {treatments: newData}).then(data => {
-            res.json({result : true, modification: data})
-        });    
-    
-    });
+    const updateObject = {
+        '$set': {
+        'treatments.$.isVisited': req.body.isVisited,
+        'treatments.$.isOk': req.body.isOk,
+        'treatments.$.isOkWithModification': req.body.isOkWithModification,
+        'treatments.$.date': req.body.date,
+        'treatments.$.actions': req.body.actions,
+        'treatments.$.nurse': req.body.nurse,
+        'treatments.$.documentsOfTreatment': req.body.documentsOfTreatment,
+        }
+    }
+    Patient.updateOne({_id : req.body._id, 'treatments._id': req.body._idTreatment}, updateObject).then(data => {
+        res.json({result : true, modification: data})
+    });    
+
 });
 
 
-//////////////// ne pas supprimer svp
+//////////////// récupérer tous les patients :
 router.get('/allPatientDay', (req, res) => {
     Patient.find().then(data => {
     res.json({ allPatient: data });
