@@ -7,49 +7,76 @@ const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
-
 router.post('/signup', (req, res) => {
-  if (!checkBody(req.body, ['username', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+  if (!checkBody(req.body, ['username', 'password', 'email', 'confirmPassword'])) {
+    res.json({ result: false, error: 'Champs manquants ou vides' });
     return;
   }
-  // Check if the user has not already been registered
-  User.findOne({ username: req.body.username }).then(data => {
-    if (data === null) {
-      const hash = bcrypt.hashSync(req.body.password, 10);
 
-      const newUser = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: hash,
-        token: uid2(32),
-        officesToken : [{
-          name : `Cabinet de ${req.body.username}`,
-          token : uid2(32),
-          isByDefault : true,
-        }],
-        colorMode: false,
-      });
-      newUser.save().then(newDoc => {
-        res.json({ result: true, token: newDoc.token, officesToken : newDoc.officesToken });
-      });
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/;
+  if (!emailRegex.test(req.body.email)) {
+    res.json({ result: false, error: 'Veuillez saisir une adresse e-mail valide.'});
+    return;
+  }
+  if (!passwordRegex.test(req.body.password)) {
+    res.json({ result: false, error: 'Le mot de passe doit contenir 10 caractères minimum, dont au moins un caractère spécial, une majuscule et une minuscule'});
+    return;
+  }
+  if (req.body.password !== req.body.confirmPassword) {
+    res.json({ result: false, error: 'Les mots de passe ne correspondent pas. Dommage...'});
+    return;
+  }
+
+  // Verify if user is already registered (by username and by email)
+  User.findOne({ username: req.body.username }).then(data => {
+    if(data){
+      res.json({ result: false, error: 'L\'utilisateur existe déjà, utilisez un autre nom d\'utilisateur' });
     } else {
-      res.json({ result: false, error: 'User already exists, use an other username' });
+      User.findOne({ email: req.body.email }).then(data => {
+        if(data){
+          res.json({ result: false, error: 'L\'utilisateur existe déjà, utilisez une autre adresse e-mail' });
+        } else {
+          const hash = bcrypt.hashSync(req.body.password, 10);
+
+          const newUser = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: hash,
+            token: uid2(32),
+            officesToken: [{
+              name: `Cabinet de ${req.body.username}`,
+              token: uid2(32),
+              isByDefault: true,
+            }],
+          });
+
+          newUser.save().then(newDoc => {
+            res.json({ result: true, token: newDoc.token, officesToken: newDoc.officesToken });
+          }).catch(err => {
+            res.json({ result: false, error: 'Erreur lors de l\'enregistrement de l\'utilisateur dans la base de données' });
+          });
+        }
+      }).catch(err => {
+        res.json({ result: false, error: 'Erreur lors de la vérification de l\'existence de l\'e-mail' });
+      });
     }
+  }).catch(err => {
+    res.json({ result: false, error: 'Erreur lors de la vérification de l\'existence du nom d\'utilisateur' });
   });
 });
 
 
 router.post('/signin', (req, res) => {
   if (!checkBody(req.body, ['username', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+    res.json({ result: false, error: 'Merci de renseigner les champs de saisie' });
     return;
   }
   User.findOne({ username: req.body.username }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
       res.json({ result: true, token : data.token, officesToken : data.officesToken});
     } else {
-      res.json({ result: false, error: 'User not found or wrong password' });
+      res.json({ result: false, error: 'Utilisateur et/ou mot de pass incorrect' });
     }
   });
 });
