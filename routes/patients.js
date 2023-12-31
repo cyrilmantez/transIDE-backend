@@ -18,7 +18,6 @@ router.post('/addPatient', (req,res) => {
     
     const newPatient = new Patient ({
         officeToken: req.body.officeToken[0].token,
-        //officeToken: 'vdDiOxapy8T3uUGLmyEy-jG6shv6qyQJ',
         name: req.body.name,
         firstname: req.body.firstname,
         yearOfBirthday : req.body.yearOfBirthday,
@@ -173,7 +172,7 @@ router.get('/patientById/:_id', (req,res) => {
     })
 })
 
-//////All patient day by token: 
+//////All patient by OfficeToken: 
 router.get('/allPatients/:token', (req, res) => {
     Patient.find({officeToken : req.params.token}).then(data => {
         console.log(data)
