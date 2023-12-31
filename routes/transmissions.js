@@ -7,10 +7,13 @@ const { checkBody } = require('../modules/checkBody');
 
 router.get('/allTransmissions/:token/:date',(req, res) => {
     const requestDate = new Date(req.params.date)
+    console.log('requestDate :',req.params.date)
+    console.log('token :',req.params.token)
     requestDate.setHours(1, 0, 0, 0);
     
+
     Patient.find({officeToken : req.params.token,'transmissions.date':{$gt:requestDate}}).then(data => {
-        console.log(data);
+        
        if (data.length>0) {
             const transmissionsArray =[];
             for (const patient of data) {
@@ -26,14 +29,13 @@ router.get('/allTransmissions/:token/:date',(req, res) => {
                     }
                 }
             }
-            console.log(transmissionsArray)
+         
             res.json({result:true,transmissions : transmissionsArray})
             }else{
             res.json({result:false, error : 'no transmission after the specified date'})
         }
         }).catch(error => {
             // Gérer les erreurs liées à la recherche dans la base de données
-            console.error(error);
             res.status(500).json({ result: false, error: 'Internal server error' });
           });
     })

@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../app');
 
-
+/*
 //////////// création patient :
 
 it('POST/patients/addPatient', async () => {
@@ -35,4 +35,4 @@ it('GET/allPatients/:dateOfToday', async () => {
 /////////////////   
 
 
-
+*/

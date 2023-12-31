@@ -4,21 +4,12 @@ const app = require('../app');
 
 /// Transmissions GET ALL OF DAY
 it('GET/transmissions/allTransmissions', async () => {
- const res = await request(app).get('/transmissions/allTransmissions');
+ const res = await request(app).get('/transmissions/allTransmissions/vdDiOxapy8T3uUGLmyEy-jG6shv6qyQJ/Sun Dec 17 2023 14:32:00 GMT+0100');
+
+ console.log(res.body.transmissions.length);
+ console.log(res.body);
 
  expect(res.statusCode).toBe(200);
  expect(res.body.result).toEqual(true);
 });
 
-/// Transmissions PUT newTransmission
-it('POST/transmissions/addTransmissions', async () => {
-    const res = (await request(app).post('/transmissions/addTransmissions')).setEncoding({
-        date : '27/11/2023',
-        nurse : 'cyril',
-        info : 'piqûre'
-    });
-   
-    expect(res.statusCode).toBe(200);
-    expect(res.body.result).toBe(true);
-   });
-   

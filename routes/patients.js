@@ -174,7 +174,7 @@ router.get('/patientById/:_id', (req,res) => {
     })
 })
 
-//////All patients by token: 
+//////All patient by OfficeToken: 
 router.get('/allPatients/:token', (req, res) => {
     Patient.find({officeToken : req.params.token}).then(data => {
         console.log(data)

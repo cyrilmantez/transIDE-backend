@@ -7,6 +7,8 @@ const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
+
+//SIGNUP ROUTE
 router.post('/signup', (req, res) => {
   if (!checkBody(req.body, ['username', 'password', 'email', 'confirmPassword'])) {
     res.json({ result: false, error: 'Champs manquants ou vides' });
@@ -67,6 +69,7 @@ router.post('/signup', (req, res) => {
 });
 
 
+//SIGNIN ROUTE
 router.post('/signin', (req, res) => {
   if (!checkBody(req.body, ['username', 'password'])) {
     res.json({ result: false, error: 'Merci de renseigner les champs de saisie' });
@@ -88,19 +91,21 @@ router.delete('/delete', (req, res) => {
   User.deleteOne({ username: req.body.username }).then(() => {
     User.findOne({username: req.body.username}).then(data => {
       if(!data){
-        res.json({result : 'user deleted'})
+        res.json({result : true, message : 'user deleted'})
       }else{
-        res.json({result : 'error'})
+        res.json({result : false, message : 'error'})
       }
     })
   });
 });
 
 
+
+
 //ROUTE DE TEST POUR RECUPERER TOUS LES USERS
 router.get('/', (req, res) => {
   User.find().then((data) => {
-    res.json({result : data})
+    res.json({result : true, users : data})
   });
 });
 
@@ -118,23 +123,20 @@ router.put('/usersByOffice', (req, res) => {
   });
 });
 
-//ROUTE POUR MODIFIER LE TABLEAU DES OFFICESTOKENS
-router.put('/newOfficesToken', (req, res)=> {
-  const {token, officesTokens, officeByDefault} = req.body;
-  console.log('by default :', officeByDefault);
-  User.updateOne({token : token},{officesToken: officesTokens}).then(data => {
-    if(data.matchedCount === 1){
-      User.find({'officesToken.token' : officeByDefault}).then(data => {
-        console.log(data);
-        const allIDE = data.map(e => e = {username : e.username});
-        console.log('allIDE' , allIDE);
-          res.json({result : true, allIDE})
-      })
+//ROUTE DE TEST POUR RECUPERER TOUS LES USERS POUR UN CABINET
+router.put('/usersByOffice', (req, res) => {
+  const token = req.body.token
+  User.find({'officesToken.token' : token}).then((data) => {
+    if (data.length>0){
+      const nurses = data.map(e => e = {username: e.username});
+    console.log(nurses);
+      res.json({result : true, nurses: nurses})
     }else{
-      res.json({error : false})
+      res.json({error : 'nurse not find'})
     }
-  })
-})
+  });
+});
+
 
 //ROUTE POUR AJOUTER UN NOUVEL OFFICE (CABINET)
 router.post('/newOffice', (req, res)=> {
@@ -160,5 +162,22 @@ router.post('/newOffice', (req, res)=> {
   })
 })
 
-
+//ROUTE POUR MODIFIER LE CABINET PAR DEFAUT ET RENVOYER LA LIST DES USERS ASSOCIES A CE CABINET
+router.put('/newOfficeByDefault', (req, res)=> {
+  const {token, officesTokens, officeByDefault} = req.body;
+  
+  User.updateOne({token : token},{officesToken: officesTokens}).then(data => {
+    if(data.matchedCount === 1){
+      //Get all IDE working in this office
+      User.find({'officesToken.token' : officeByDefault}).then(data => {
+        console.log(data);
+        const allIDE = data.map(e => e = {username : e.username});
+        console.log('allIDE' , allIDE);
+          res.json({result : true, allIDE})
+      })
+    }else{
+      res.json({error : false})
+    }
+  })
+})
 module.exports = router;
