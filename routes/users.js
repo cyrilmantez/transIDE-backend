@@ -109,19 +109,6 @@ router.get('/', (req, res) => {
   });
 });
 
-//ROUTE DE TEST POUR RECUPERER TOUS LES USERS POUR UN CABINET
-router.put('/usersByOffice', (req, res) => {
-  const token = req.body.token
-  User.find({'officesToken.token' : token}).then((data) => {
-    if (data.length>0){
-      const nurses = data.map(e => e = {username: e.username});
-    console.log(nurses);
-      res.json({result : true, nurses: nurses})
-    }else{
-      res.json({error : 'nurse not find'})
-    }
-  });
-});
 
 //ROUTE DE TEST POUR RECUPERER TOUS LES USERS POUR UN CABINET
 router.put('/usersByOffice', (req, res) => {
