@@ -78,19 +78,9 @@ router.put('/addTreatment', (req, res) => {
     Patient.findById(req.body._id).then(data1 => {
          let allNewTreatments = [...data1.treatments, ...req.body.newTreatments]
          Patient.updateOne({_id : data1._id}, {treatments: allNewTreatments}).then(data => {
-            res.json({result: true})
+            res.json({result: true, patient : data})
          })
         
-    })
-})
-
-
-
-//////////// suppression d'un patient :
-
-router.delete('/deletePatient/:_id', (req, res)=> {
-    Patient.deleteOne({_id: req.params._id}).then(data => {
-        res.json({result : true})
     })
 })
 
@@ -99,7 +89,7 @@ router.delete('/deletePatient/:_id', (req, res)=> {
 
 ///////////// recupération de tous les patients à voir pour le jour :
 
-router.post('/allPatients', (req, res) => {
+router.post('/allPatientsOfDay', (req, res) => {
     const newDate = new Date(req.body.dateOfToday);
     const targetDate = newDate.getDate();
     const targetMonth = newDate.getMonth() + 1;
@@ -157,14 +147,6 @@ router.post('/allPatients', (req, res) => {
 });
 
 
-///////////// récupération d'un patient par nom :
-router.get('/patientByName/:name', (req,res) => {
-    Patient.find({name: req.params.name}).then(data => {
-    res.json({result: true, patient: data})
-    
-    })
-})
-
 
 ///////////// récupération d'un patient par Id:
 router.get('/patientById/:_id', (req,res) => {
@@ -213,11 +195,6 @@ router.put('/updateTreatment', (req, res) => {
 });
 
 
-//////////////// récupérer tous les patients :
-router.get('/allPatientDay', (req, res) => {
-    Patient.find().then(data => {
-    res.json({ allPatient: data });
-    });
-    });
+
 
 module.exports = router;

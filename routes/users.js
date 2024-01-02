@@ -87,6 +87,7 @@ router.post('/signin', (req, res) => {
 
 
 //ROUTE DE TEST POUR SUPPRIMER UN USER
+/*
 router.delete('/delete', (req, res) => {
   User.deleteOne({ username: req.body.username }).then(() => {
     User.findOne({username: req.body.username}).then(data => {
@@ -108,9 +109,9 @@ router.get('/', (req, res) => {
     res.json({result : true, users : data})
   });
 });
+*/
 
-
-//ROUTE DE TEST POUR RECUPERER TOUS LES USERS POUR UN CABINET
+//ROUTE POUR RECUPERER TOUS LES USERS POUR UN CABINET
 router.put('/usersByOffice', (req, res) => {
   const token = req.body.token
   User.find({'officesToken.token' : token}).then((data) => {
@@ -149,7 +150,7 @@ router.post('/newOffice', (req, res)=> {
   })
 })
 
-//ROUTE POUR MODIFIER LE CABINET PAR DEFAUT ET RENVOYER LA LIST DES USERS ASSOCIES A CE CABINET
+//ROUTE POUR MODIFIER LE CABINET PAR DEFAUT ET RENVOYER LA LISTE DES USERS ASSOCIES A CE CABINET
 router.put('/newOfficeByDefault', (req, res)=> {
   const {token, officesTokens, officeByDefault} = req.body;
   
@@ -167,4 +168,5 @@ router.put('/newOfficeByDefault', (req, res)=> {
     }
   })
 })
+
 module.exports = router;
