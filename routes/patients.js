@@ -97,15 +97,14 @@ router.post('/allPatientsOfDay', (req, res) => {
 
     Patient.find({officeToken: req.body.officeToken}).then(data => {
         let allPatientsToSee = [];
-       // console.log(data)
+
         for (const patient of data){
         
             let allTreatments = [...patient.treatments]
 
-        //console.log('allTreatments', allTreatments)
             for (let i=0; i<allTreatments.length; i++) {
-                //console.log('allTreatments', allTreatments[i])
-                // Vérifiez si la date existe avant d'essayer d'accéder à ses propriétés
+               
+                // Vérifiez si la date existe avant d'essayer d'accéder à ses propriétés :
                 if (allTreatments[i] && allTreatments[i].date) {
                     const jour = allTreatments[i].date.getDate();
                     const mois = allTreatments[i].date.getMonth()+1;
@@ -118,7 +117,7 @@ router.post('/allPatientsOfDay', (req, res) => {
                         const formattedMinutes = String(minutes).padStart(2, '0');
                         const formattedHours = String(hours).padStart(2, '0');
 
-    /////////// création de l'objet retourné par date correspondante :
+    ///// création de l'objet retourné par date correspondante :
                     const infosToHave = {
                         _id: patient._id,
                         name : patient.name,
@@ -155,6 +154,7 @@ router.get('/patientById/:_id', (req,res) => {
         
     })
 })
+
 
 //////All patient by OfficeToken: 
 router.get('/allPatients/:token', (req, res) => {

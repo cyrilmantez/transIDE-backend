@@ -8,7 +8,7 @@ const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
 
-//SIGNUP ROUTE
+/////////////SIGNUP ROUTE :
 router.post('/signup', (req, res) => {
   if (!checkBody(req.body, ['username', 'password', 'email', 'confirmPassword'])) {
     res.json({ result: false, error: 'Champs manquants ou vides' });
@@ -30,7 +30,7 @@ router.post('/signup', (req, res) => {
     return;
   }
 
-  // Verify if user is already registered (by username and by email)
+  /// Verify if user is already registered (by username and by email)
   User.findOne({ username: req.body.username }).then(data => {
     if(data){
       res.json({ result: false, error: 'L\'utilisateur existe déjà, utilisez un autre nom d\'utilisateur' });
@@ -69,7 +69,8 @@ router.post('/signup', (req, res) => {
 });
 
 
-//SIGNIN ROUTE
+
+/////////////SIGNIN ROUTE :
 router.post('/signin', (req, res) => {
   if (!checkBody(req.body, ['username', 'password'])) {
     res.json({ result: false, error: 'Merci de renseigner les champs de saisie' });
@@ -86,32 +87,7 @@ router.post('/signin', (req, res) => {
 
 
 
-//ROUTE DE TEST POUR SUPPRIMER UN USER
-/*
-router.delete('/delete', (req, res) => {
-  User.deleteOne({ username: req.body.username }).then(() => {
-    User.findOne({username: req.body.username}).then(data => {
-      if(!data){
-        res.json({result : true, message : 'user deleted'})
-      }else{
-        res.json({result : false, message : 'error'})
-      }
-    })
-  });
-});
-
-
-
-
-//ROUTE DE TEST POUR RECUPERER TOUS LES USERS
-router.get('/', (req, res) => {
-  User.find().then((data) => {
-    res.json({result : true, users : data})
-  });
-});
-*/
-
-//ROUTE POUR RECUPERER TOUS LES USERS POUR UN CABINET
+////////////////ROUTE POUR RECUPERER TOUS LES USERS POUR UN CABINET :
 router.put('/usersByOffice', (req, res) => {
   const token = req.body.token
   User.find({'officesToken.token' : token}).then((data) => {
@@ -126,7 +102,7 @@ router.put('/usersByOffice', (req, res) => {
 });
 
 
-//ROUTE POUR AJOUTER UN NOUVEL OFFICE (CABINET)
+///////////////ROUTE POUR AJOUTER UN NOUVEL OFFICE (CABINET) :
 router.post('/newOffice', (req, res)=> {
   const {officeToken, token} = req.body;
   User.findOne({'officesToken.token':officeToken}).then(data => {
@@ -150,7 +126,8 @@ router.post('/newOffice', (req, res)=> {
   })
 })
 
-//ROUTE POUR MODIFIER LE CABINET PAR DEFAUT ET RENVOYER LA LISTE DES USERS ASSOCIES A CE CABINET
+
+////////////////////ROUTE POUR MODIFIER LE CABINET PAR DEFAUT ET RENVOYER LA LISTE DES USERS ASSOCIES A CE CABINET :
 router.put('/newOfficeByDefault', (req, res)=> {
   const {token, officesTokens, officeByDefault} = req.body;
   
@@ -168,5 +145,6 @@ router.put('/newOfficeByDefault', (req, res)=> {
     }
   })
 })
+
 
 module.exports = router;
